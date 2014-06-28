@@ -108,7 +108,7 @@ if __name__ == "__main__":
     if nparams >= 1: 
         themes = sys.argv[1:]
 
-    # ... otherwise just use these themes:
+    # ... otherwise use all the available theme folders
     else:
 
         # get all files inthe base theme folder
