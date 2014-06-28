@@ -1,11 +1,13 @@
 import os
 
-def check_several_themes(themes):
+ICON_DATABASE_FOLDER = "../icon-database"
+
+def check_for_context_problems(themes):
     Icons = {}
 
     for theme in themes:
 
-        with open(os.path.join("../icon-database", theme + ".txt"), "r") as f:
+        with open(os.path.join(ICON_DATABASE_FOLDER, theme + ".txt"), "r") as f:
             icons = f.read().splitlines()
 
         for icon in icons:
@@ -66,12 +68,39 @@ def check_several_themes(themes):
             correct_icons += 1
         else:
             incorrect_icons += 1
+    
     print
-    print "correct items", correct_icons
-    print "incorrect items", incorrect_icons    
-
-themes = ["standard-icons-0.8.90", "Oxygen-4"]
-# themes = ["Oxygen-4"]
+    print "Icons with unique contexts:  ", correct_icons
+    print "Icons with multiple contexts:", incorrect_icons    
 
 
-check_several_themes(themes)
+if __name__ == "__main__":
+
+    import sys
+
+    nparams = len(sys.argv) - 1
+
+    # Please note: 
+    # - all themes must be in the "../base_themes/" subfolder!
+    # - the themename is the folder of the theme, notthe one given in the index.theme file
+    # - one could implement direct support of locally installed theme files in /usr/share/icons
+    #   but creating symlinks in the ".../base_themes/" folder might be easier
+
+    # if there are parameters passed via command line then these are treated as theme names...
+    if nparams >= 1: 
+        themes = sys.argv[1:]
+
+    # ... otherwise use all the available theme folders
+    else:
+
+        # get all files inthe base theme folder
+        themes = os.listdir(ICON_DATABASE_FOLDER)
+
+        # remove all folder in which 'index.theme' does not exist
+        themes = [f for f in themes if os.path.isfile(os.path.join(ICON_DATABASE_FOLDER, f))]
+
+        # take only file with the ending 'txt' strip the ending
+        themes = [f[:-4] for f in themes if f.endswith(".txt")]
+
+    check_for_context_problems(themes)
+
