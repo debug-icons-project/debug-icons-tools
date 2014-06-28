@@ -6,8 +6,11 @@ from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
 
+# this is where the name lists and the icon id file is stored
+ICON_DATABASE_FOLDER = "../icon-database"
+
 # this is the subfolder inwhich the debug theme is saved
-debug_icon_theme_folder = os.path.join("..", "debug-icons")
+FINAL_THEME_FOLDER = "../final-themes"
 
 # only these contexts are supported right now
 supported_contexts = ["actions", 
@@ -63,7 +66,7 @@ def generate_subfolder_name(size, name):
     return os.path.join("%dx%d" % (size, size), name) # this is done in this specific way because otherwise KDE will not find some theme icons
 
 # this writes the theme file for all supported contexts and the user defined sizes
-def write_theme_ini(sizes):
+def write_theme_ini(output, sizes):
     """this creates an inifile with all paths"""
     
     # this is the header of the theme file
@@ -120,10 +123,12 @@ def write_theme_ini(sizes):
 
     #####################
     # write the ini text to the theme file
-    if not os.path.exists(debug_icon_theme_folder):
-        os.makedirs(debug_icon_theme_folder)
 
-    with open(os.path.join(debug_icon_theme_folder, "index.theme"), "w") as f:
+    complete_path = os.path.join(FINAL_THEME_FOLDER, output)
+    if not os.path.exists(complete_path):
+        os.makedirs(complete_path)
+
+    with open(os.path.join(complete_path, "index.theme"), "w") as f:
 
         f.write(file_content)
 
@@ -252,7 +257,7 @@ def load_abbrs():
 
     temp_unique = []
 
-    with open("icon_ids.txt", "r") as f:
+    with open(os.path.join(ICON_DATABASE_FOLDER, "icon.ids"), "r") as f:
 
         temp = f.read().splitlines()
 
@@ -291,7 +296,7 @@ def load_abbrs():
 
     return abbrs
 
-def create_theme(themes, sizes):
+def create_theme(base_themes, output, sizes):
     
     ##############
     # sets some default values
@@ -322,7 +327,7 @@ def create_theme(themes, sizes):
     # here we load the abbreveation file
     icon_abbrs = load_abbrs()
 
-    write_theme_ini(sizes)
+    write_theme_ini(output, sizes)
 
     ###
     # load icons
@@ -332,9 +337,9 @@ def create_theme(themes, sizes):
 
     # load all icon names from all files and populate a dict which contains a list of 
     # all icon names for all supported contexts
-    for theme in themes:
+    for theme in base_themes:
     
-        with open(os.path.join("base_themes", theme + ".txt"), "r") as f:
+        with open(os.path.join(ICON_DATABASE_FOLDER, theme + ".txt"), "r") as f:
             lines = f.read().splitlines()    
         
         for line in lines:
@@ -387,19 +392,21 @@ def create_theme(themes, sizes):
                 # save icon
                 sub_dir = generate_subfolder_name(size, context_folders[current_context])
                 
-                full_path = os.path.join(debug_icon_theme_folder, sub_dir)
+                full_path = os.path.join(FINAL_THEME_FOLDER, output, sub_dir)
                 
                 if not os.path.exists(full_path):
                     os.makedirs(full_path)
 
                 icon.save(os.path.join(full_path, name + ".png"))
 
+            # this is used for the look up file for icon ids and filenames
             icon_list.append("%-6s = %s/%s" % (icon_id, current_context, name))
     
+    # create the list of all icon ids and the coresponding file names
     icon_list.sort()
     icon_list = "\n".join(icon_list)
 
-    with open(os.path.join(debug_icon_theme_folder, "lookup_icons.txt"), "w") as f:
+    with open(os.path.join(FINAL_THEME_FOLDER, output, "lookup_icons.txt"), "w") as f:
         f.write(icon_list)
     
 
@@ -413,6 +420,7 @@ sizes = [16, 22, 24, 32, 48, 64, 96, 128]
 # themes = ["standard_icons", "oxygen", "hicolor", "Moka"]
 # themes = ["standard_icons", "oxygen"]
 # themes = ["standard_icons"]
-themes = ["Faba", "hicolor_local", "Moka", "oxygen", "standard_icons"]
+# themes = ["Faba", "hicolor_local", "Moka", "oxygen", "standard_icons"]
+# themes = ["standard-icons-0.8.90"]
 
-create_theme(themes, sizes)
+create_theme(base_themes=["standard-icons-0.8.90"], output="standard-icons-0.8.90", sizes=sizes)
