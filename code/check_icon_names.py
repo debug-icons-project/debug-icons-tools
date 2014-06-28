@@ -3,6 +3,13 @@ import os
 ICON_DATABASE_FOLDER = "../icon-database"
 
 def check_for_context_problems(themes):
+
+    print "Checking the following themes for icons in multiple contexts:"
+    print ", ".join(themes)
+    print
+
+
+
     Icons = {}
 
     for theme in themes:
@@ -69,7 +76,6 @@ def check_for_context_problems(themes):
         else:
             incorrect_icons += 1
     
-    print
     print "Icons with unique contexts:  ", correct_icons
     print "Icons with multiple contexts:", incorrect_icons    
 
