@@ -415,12 +415,6 @@ def create_theme(base_themes, output, sizes):
 # here starts the real program
 
 sizes = [16, 22, 24, 32, 48, 64, 96, 128]
-# sizes = [96]
-
-# themes = ["standard_icons", "oxygen", "hicolor", "Moka"]
-# themes = ["standard_icons", "oxygen"]
-# themes = ["standard_icons"]
-# themes = ["Faba", "hicolor_local", "Moka", "oxygen", "standard_icons"]
-# themes = ["standard-icons-0.8.90"]
 
 create_theme(base_themes=["standard-icons-0.8.90"], output="debug-icons-standard-0.8.90", sizes=sizes)
+create_theme(base_themes=["Oxygen-4"], output="debug-icons-oxygen-4", sizes=sizes)
