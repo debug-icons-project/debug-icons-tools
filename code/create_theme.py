@@ -71,9 +71,9 @@ def write_theme_ini(output, sizes):
     
     # this is the header of the theme file
     ini_header = """[Icon Theme]
-                 Name=Debug icons
+                 Name=%s
                  Comment=A theme which can be used for debugging or creating new icon themes
-                 """
+                 """ % output
 
     #####################
     # write the Directories string to the theme file which contains a comma separated list of all icon subdirectories
@@ -111,7 +111,7 @@ def write_theme_ini(output, sizes):
                                 [%s]
                                 Size=%d
                                 Context=%s
-                                Type=Threshold
+                                Type=Fixed
                                 """ % (subfolder, size, context_nice_names[c])
 
     # these 4 lines remove all trailing whitespace which resulted from the indention above... 
@@ -416,5 +416,10 @@ def create_theme(base_themes, output, sizes):
 
 sizes = [16, 22, 24, 32, 48, 64, 96, 128]
 
+print
+print "creating standard icons"
 create_theme(base_themes=["standard-icons-0.8.90"], output="debug-icons-standard-0.8.90", sizes=sizes)
+
+print
+print "creating oxygen icon"
 create_theme(base_themes=["Oxygen-4"], output="debug-icons-oxygen-4", sizes=sizes)
